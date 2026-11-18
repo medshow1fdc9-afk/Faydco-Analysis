@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لوحة تحليل الأهداف 2026 — فايدكو</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f4f6fb;--card:#ffffff;--text:#0f172a;--muted:#64748b;--line:#e5e9f2;--brand:#1e3a8a;--brand2:#2563eb;--good:#15803d;--bad:#b91c1c;--warn:#b45309;--kpi:#f8fafc;--track:#e2e8f0}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#0b1120;--card:#111a2e;--text:#e2e8f0;--muted:#94a3b8;--line:#1e2a44;--brand:#1e3a8a;--brand2:#3b82f6;--good:#4ade80;--bad:#f87171;--warn:#fbbf24;--kpi:#16213a;--track:#1e2a44}
+}
+:root[data-theme="dark"]{--bg:#0b1120;--card:#111a2e;--text:#e2e8f0;--muted:#94a3b8;--line:#1e2a44;--brand:#1e3a8a;--brand2:#3b82f6;--good:#4ade80;--bad:#f87171;--warn:#fbbf24;--kpi:#16213a;--track:#1e2a44}
+
+*{box-sizing:border-box}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Cairo',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;font-size:14px;line-height:1.6}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 16px 32px;display:flex;flex-direction:column;gap:16px}
+
+header.top{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:18px;padding:22px 24px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+header.top h1{margin:0;font-size:24px;font-weight:800}
+header.top p{margin:4px 0 0;opacity:.85;font-size:13px}
+.filters{display:flex;flex-wrap:wrap;gap:10px}
+.filters label{display:flex;flex-direction:column;font-size:12px;gap:4px;opacity:.95}
+.filters select{font-family:inherit;font-size:14px;padding:8px 10px;border-radius:10px;border:0;min-width:170px;background:#fff;color:#0f172a}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.card h2{margin:0 0 12px;font-size:16px;font-weight:700}
+.card .hint{margin:-6px 0 10px;color:var(--muted);font-size:12px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.kpi .lbl{color:var(--muted);font-size:13px}
+.kpi .val{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpi .sub{color:var(--muted);font-size:12px}
+.bar{height:6px;background:var(--track);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--brand2)}
+.bar i.good{background:var(--good)}
+.bar i.warn{background:var(--warn)}
+.bar i.bad{background:var(--bad)}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.chart{position:relative;height:280px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+.tablewrap{overflow-x:auto}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+th{color:var(--muted);font-weight:600;font-size:12px;background:var(--kpi)}
+tr.sel td{background:rgba(37,99,235,.08);font-weight:700}
+tr.total td{font-weight:800;border-top:2px solid var(--line)}
+.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:700}
+.pill.good{background:rgba(21,128,61,.14);color:var(--good)}
+.pill.warn{background:rgba(180,83,9,.14);color:var(--warn)}
+.pill.bad{background:rgba(185,28,28,.12);color:var(--bad)}
+.neg{color:var(--bad)}
+.pos{color:var(--good)}
+.muted{color:var(--muted)}
+
+.notes ul{margin:0;padding-right:20px;display:flex;flex-direction:column;gap:8px}
+.notes li{line-height:1.8}
+.notes.warnbox{border-color:rgba(180,83,9,.4)}
+.notes.warnbox h2{color:var(--warn)}
+footer{color:var(--muted);font-size:12px;text-align:center;padding-top:6px}
+
+@media (max-width:600px){
+  header.top h1{font-size:20px}
+  .filters select{min-width:0;width:100%}
+  .filters label{flex:1 1 140px}
+  .kpi .val{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <h1>لوحة تحليل الأهداف 2026</h1>
+    <p>فايدكو · البيانات من يناير حتى 14 نوفمبر 2026</p>
+  </div>
+  <div class="filters">
+    <label>الفرع <select id="branch"></select></label>
+    <label>من شهر <select id="from"></select></label>
+    <label>إلى شهر <select id="to"></select></label>
+  </div>
+</header>
+
+<section class="kpis" id="kpis"></section>
+
+<section class="grid2">
+  <div class="card"><h2>المبيعات: الفعلي مقابل المستهدف</h2><div class="chart"><canvas id="cSales"></canvas></div></div>
+  <div class="card"><h2>المشتريات: الفعلي مقابل المستهدف</h2><div class="chart"><canvas id="cPurch"></canvas></div></div>
+  <div class="card"><h2>الانحراف الشهري</h2><p class="hint">المبيعات: موجب = فوق الهدف (إيجابي). التكاليف المتغيرة: موجب = أعلى من المستهدف التقديري (يحتاج متابعة)، والسالب = تحت المستهدف (إيجابي).</p><div class="chart"><canvas id="cVar"></canvas></div></div>
+  <div class="card"><h2>هيكل المصروفات الفعلية</h2><div class="chart"><canvas id="cCost"></canvas></div></div>
+</section>
+
+<section class="card">
+  <h2>نسبة تحقق المبيعات حسب الفرع</h2>
+  <p class="hint">للفترة المختارة. الأخضر ≥ 80%، البرتقالي 50% – 80%، الأحمر أقل من 50%.</p>
+  <div id="brWrap" class="chart" style="height:340px"><canvas id="cBranch"></canvas></div>
+</section>
+
+<section class="card">
+  <h2>تفاصيل الفروع للفترة المختارة</h2>
+  <div class="tablewrap"><table id="tbl"></table></div>
+</section>
+
+<section class="card notes">
+  <h2>أهم الملاحظات (يناير – نوفمبر، وتبقى ثابتة مع الفلاتر)</h2>
+  <p class="hint">أساس الحكم: المبيعات والمشتريات، فوق المستهدف = إيجابي. التكاليف المتغيرة، المستهدف التقديري هو الحد الأقصى المسموح: تحته = تحت السيطرة (إيجابي)، وفوقه = يحتاج متابعة.</p>
+  <ul>
+    <li>المبيعات الفعلية بلغت 6.58 مليون من مستهدف 12.91 مليون، أي تحقق 51%. كان التحقق أعلى في يناير (نحو 65%)، ثم انخفض إلى ما بين 38% و48% من يونيو حتى أكتوبر، وبلغ 54% في نوفمبر (حتى 14 يوماً).</li>
+    <li>التكاليف المتغيرة الفعلية بلغت 722 ألفاً، مقابل مستهدف تقديري 631 ألفاً. أي أنها أعلى من الحد المستهدف بنحو 91 ألفاً (14.5%)، وهذا يحتاج متابعة. أكبر الفروق فوق المستهدف: تبوك (+47 ألفاً)، ومستودع سكاكا (+35 ألفاً)، والمدينة المنورة (+22 ألفاً).</li>
+    <li>الفروع تحت السيطرة (ضمن المستهدف): مستودع حائل بوفر 33 ألفاً (نحو 40% تحت المستهدف)، والعلا بوفر 16 ألفاً (نحو 9%)، وموزع 1 سكاكا بوفر 9 آلاف، وموزع 2 جدة بوفر نحو 2 ألف.</li>
+    <li>على مستوى الشهور: التكاليف المتغيرة كانت تحت المستهدف في 4 شهور من 11 (أبريل وأغسطس وسبتمبر وأكتوبر)، وأفضلها سبتمبر بوفر نحو 13 ألفاً. أعلى فارق فوق المستهدف في مايو (+45 ألفاً).</li>
+    <li>فرع جدة الرئيسي المتوقف ما زال يسجل تكاليف متغيرة بنحو 16.6 ألفاً مقابل مستهدف 4.7 ألف، أي أعلى من المستهدف بنحو 12 ألفاً. يحتاج متابعة سبب التسجيل.</li>
+    <li>أعلى الفروع تحققاً في المبيعات: موزع 1 تبوك (112%)، ثم العلا (75%)، ثم مستودع حائل (74%). وأضعفها: جدة (11%، وهو متوقف)، ثم تبوك (22%)، ثم مستودع سكاكا (26%).</li>
+    <li>المشتريات الفعلية بلغت 48% من المستهدف، وأفضلها العلا (74%) ومستودع حائل (52%) مقابل المدينة المنورة (42%) وتبوك (20%).</li>
+    <li>إجمالي المصروفات (مشتريات + متغيرة + ثابتة) يعادل 105% من المبيعات الفعلية. الرقم تقريبي لأن المشتريات تشمل مناقلات داخلية وليست كلها شراء محلي، كما هو موضح أدناه.</li>
+    <li>التكاليف الثابتة بلغت 1.89 مليون ولا يوجد لها مستهدف مسجل، لذلك لا يمكن تقييم انحرافها. يُنصح بإضافة مستهدف شهري لها.</li>
+  </ul>
+</section>
+
+<section class="card notes warnbox">
+  <h2>ملاحظات على جودة البيانات وتفسيرها</h2>
+  <ul>
+    <li>فرع جدة الرئيسي متوقف عن النشاط، لذلك مشترياته صفر وتحققه منخفض، وهذا طبيعي وليس خطأ في التسجيل. لكن مستهدفه ما زال محسوباً في الإجمالي: استبعاده يرفع تحقق المبيعات الإجمالي من 51.0% إلى 51.6%، وتحقق المشتريات من 48.2% إلى 49.2%. ويستحق الفرع المراجعة لأنه ما زال يسجل تكاليف ثابتة (91 ألفاً) ومتغيرة (16.6 ألفاً) رغم توقفه.</li>
+    <li>الموزعون مناديب مبيعات، وليس لهم مستهدفات مشتريات. يستلمون بضاعتهم عن طريق مناقلات من المستودع الرئيسي، لذلك المستهدف لهم في المبيعات فقط.</li>
+    <li>بعض المشتريات المسجلة عند موزعين (مثل موزع 1 تبوك بنحو 245 ألفاً) هي مناقلات بضاعة من مستودع الاستيراد أو من فروع، وليست مشتريات محلية. لذلك نسبة تحقق مشتريات هذا الموزع لا تعكس أداء الشراء، وإجمالي المشتريات يحتوي على مناقلات داخلية، فنسبة المصروفات إلى المبيعات تقريبية.</li>
+    <li>موزع 1 جدة يظهر له بيانات حتى فبراير فقط، وموزع حفر الباطن يبدأ تسجيله من يوليو.</li>
+  </ul>
+</section>
+
+<footer>إعداد: عماد محمد عبدالله · المصدر: شيت «البيانات» في ملف لوحة_تحليل_الاهداف_لعام_2026.xlsx · الأرقام كما وردت دون تعديل</footer>
+
+</div>
+
+<script>
+const RAW = [
+ {
+  "branch": "جدة",
+  "m": 1,
+  "month": "يناير",
+  "pt": 16952.98,
+  "pa": 0.0,
+  "st": 21466.44,
+  "sa": 2020.87,
+  "fc": 8935.03,
+  "vt": 410.08,
+  "va": 0.0
+ },
+ {
+  "branch": "جدة",
+  "m": 2,
+  "month": "فبراير",
+  "pt": 15648.91,
+  "pa": 0.0,
+  "st": 19815.18,
+  "sa": 145.22,
+  "fc": 8247.72,
+  "vt": 29.47,
+  "va": 0.0
+ },
+ {
+  "branch": "جدة",
+  "m": 3,
+  "month": "مارس",
+  "pt": 14996.87,
+  "pa": 0.0,
+  "st": 18989.54,
+  "sa": 2098.26,
+  "fc": 7904.07,
+  "vt": 425.78,
+  "va": 0.0
+ },
+ {
+  "branch": "جدة",
+  "m": 4,
+  "month": "ابريل",
+  "pt": 16952.98,
+  "pa": 0.0,
+  "st": 21466.44,
+  "sa": 500.0,
+  "fc": 8935.03,
+  "vt": 101.46,
+  "va": 0.0
+ },
+ {
+  "branch": "جدة",
+  "m": 5,
+  "month": "مايو",
+  "pt": 14996.87,
+  "pa": 0.0,
+  "st": 18989.54,
+  "sa": 4536.87,
+  "fc": 7904.07,
+  "vt": 920.63,
+  "va": 4178.29
+ },
+ {
+  "branch": "جدة",
+  "m": 6,
+  "month": "يونيو",
+  "pt": 16952.98,
+  "pa": 0.0,
+  "st": 21466.44,
+  "sa": 2422.61,
+  "fc": 8935.03,
+  "vt": 491.6,
+  "va": 2750.0
+ },
+ {
+  "branch": "جدة",
+  "m": 7,
+  "month": "يوليو",
+  "pt": 16952.98,
+  "pa": 0.0,
+  "st": 21466.44,
+  "sa": 5779.13,
+  "fc": 8935.03,
+  "vt": 1172.71,
+  "va": 1386.42
+ },
+ {
+  "branch": "جدة",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": 17605.02,
+  "pa": 0.0,
+  "st": 22292.07,
+  "sa": 48.7,
+  "fc": 9278.69,
+  "vt": 9.88,
+  "va": 3766.0
+ },
+ {
+  "branch": "جدة",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": 16952.98,
+  "pa": 0.0,
+  "st": 21466.44,
+  "sa": 250.44,
+  "fc": 8935.13,
+  "vt": 50.82,
+  "va": 0.0
+ },
+ {
+  "branch": "جدة",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": 16952.98,
+  "pa": 0.0,
+  "st": 21466.44,
+  "sa": 1820.0,
+  "fc": 8935.03,
+  "vt": 369.32,
+  "va": 0.0
+ },
+ {
+  "branch": "جدة",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": 7824.45,
+  "pa": 0.0,
+  "st": 9907.59,
+  "sa": 3781.3,
+  "fc": 4123.86,
+  "vt": 767.31,
+  "va": 4496.75
+ },
+ {
+  "branch": "جدة",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 1,
+  "month": "يناير",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": 0.0,
+  "vt": 0.0,
+  "va": 0.0
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 2,
+  "month": "فبراير",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": 0.0,
+  "vt": 0.0,
+  "va": 0.0
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 3,
+  "month": "مارس",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": 0.0,
+  "vt": 0.0,
+  "va": 0.0
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 4,
+  "month": "ابريل",
+  "pt": null,
+  "pa": null,
+  "st": 6000.0,
+  "sa": 9052.22,
+  "fc": 1057.74,
+  "vt": 1836.9,
+  "va": 1747.0
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 5,
+  "month": "مايو",
+  "pt": null,
+  "pa": null,
+  "st": 34500.0,
+  "sa": 22440.32,
+  "fc": 6081.99,
+  "vt": 4553.64,
+  "va": 9237.26
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 6,
+  "month": "يونيو",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 16281.74,
+  "fc": 6875.29,
+  "vt": 3303.93,
+  "va": 3028.0
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 7,
+  "month": "يوليو",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 11773.92,
+  "fc": 6875.29,
+  "vt": 2389.19,
+  "va": 2784.0
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": null,
+  "pa": null,
+  "st": 40500.0,
+  "sa": 9823.48,
+  "fc": 7139.72,
+  "vt": 1993.4,
+  "va": 2126.68
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 12791.3,
+  "fc": 6875.29,
+  "vt": 2595.64,
+  "va": 2431.97
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 12550.24,
+  "fc": 6875.29,
+  "vt": 2546.72,
+  "va": 4575.56
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": null,
+  "pa": null,
+  "st": 18000.0,
+  "sa": 5104.35,
+  "fc": 3173.21,
+  "vt": 1035.79,
+  "va": 847.3
+ },
+ {
+  "branch": "موزع القصيم",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 1,
+  "month": "يناير",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 13774.15,
+  "fc": 6875.29,
+  "vt": 2795.08,
+  "va": 1718.13
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 2,
+  "month": "فبراير",
+  "pt": null,
+  "pa": null,
+  "st": 16500.0,
+  "sa": 4267.82,
+  "fc": 2908.78,
+  "vt": 866.03,
+  "va": 2970.69
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 3,
+  "month": "مارس",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 4,
+  "month": "ابريل",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 5,
+  "month": "مايو",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 6,
+  "month": "يونيو",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 7,
+  "month": "يوليو",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 جدة",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 1,
+  "month": "يناير",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 17722.99,
+  "fc": 6790.88,
+  "vt": 3596.39,
+  "va": 2714.46
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 2,
+  "month": "فبراير",
+  "pt": null,
+  "pa": null,
+  "st": 36000.0,
+  "sa": 11555.06,
+  "fc": 6268.5,
+  "vt": 2344.78,
+  "va": 684.0
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 3,
+  "month": "مارس",
+  "pt": null,
+  "pa": null,
+  "st": 34500.0,
+  "sa": 6655.65,
+  "fc": 6007.31,
+  "vt": 1350.58,
+  "va": 1253.9
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 4,
+  "month": "ابريل",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 9648.57,
+  "fc": 6790.88,
+  "vt": 1957.91,
+  "va": 304.0
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 5,
+  "month": "مايو",
+  "pt": null,
+  "pa": null,
+  "st": 34500.0,
+  "sa": 6469.57,
+  "fc": 6007.31,
+  "vt": 1312.82,
+  "va": 8837.56
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 6,
+  "month": "يونيو",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 15989.57,
+  "fc": 6790.88,
+  "vt": 3244.64,
+  "va": 2475.83
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 7,
+  "month": "يوليو",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 13491.31,
+  "fc": 6790.88,
+  "vt": 2737.69,
+  "va": 3605.06
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": null,
+  "pa": null,
+  "st": 40500.0,
+  "sa": 20959.13,
+  "fc": 7052.06,
+  "vt": 4253.07,
+  "va": 3700.91
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 11300.97,
+  "fc": 6790.88,
+  "vt": 2293.2,
+  "va": 728.61
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 22743.48,
+  "fc": 6790.88,
+  "vt": 4615.16,
+  "va": 2064.33
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": null,
+  "pa": null,
+  "st": 18000.0,
+  "sa": 5173.04,
+  "fc": 3134.25,
+  "vt": 1049.73,
+  "va": 500.87
+ },
+ {
+  "branch": "موزع 2 جدة",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 1,
+  "month": "يناير",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 2,
+  "month": "فبراير",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 3,
+  "month": "مارس",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 4,
+  "month": "ابريل",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 5,
+  "month": "مايو",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 6,
+  "month": "يونيو",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 7,
+  "month": "يوليو",
+  "pt": null,
+  "pa": null,
+  "st": 4500.0,
+  "sa": 1718.26,
+  "fc": 783.56,
+  "vt": 348.67,
+  "va": 8874.66
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": null,
+  "pa": null,
+  "st": 40500.0,
+  "sa": 35695.76,
+  "fc": 7052.06,
+  "vt": 7243.46,
+  "va": 5416.34
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 20357.8,
+  "fc": 6790.88,
+  "vt": 4131.05,
+  "va": 1573.0
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 19439.11,
+  "fc": 6790.88,
+  "vt": 3944.63,
+  "va": 1224.0
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": null,
+  "pa": null,
+  "st": 18000.0,
+  "sa": 16091.31,
+  "fc": 3134.25,
+  "vt": 3265.28,
+  "va": 3355.0
+ },
+ {
+  "branch": "موزع حفر الباطن",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 1,
+  "month": "يناير",
+  "pt": 191213.54,
+  "pa": 129938.13,
+  "st": 248577.61,
+  "sa": 179735.96,
+  "fc": 36720.95,
+  "vt": 8901.26,
+  "va": 7204.88
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 2,
+  "month": "فبراير",
+  "pt": 176504.81,
+  "pa": 181407.67,
+  "st": 229456.25,
+  "sa": 186460.33,
+  "fc": 33896.26,
+  "vt": 9234.28,
+  "va": 8922.56
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 3,
+  "month": "مارس",
+  "pt": 169150.44,
+  "pa": 68748.34,
+  "st": 219895.57,
+  "sa": 118388.39,
+  "fc": 32483.91,
+  "vt": 5863.08,
+  "va": 9067.86
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 4,
+  "month": "ابريل",
+  "pt": 191213.54,
+  "pa": 126027.59,
+  "st": 248577.61,
+  "sa": 179788.92,
+  "fc": 36720.95,
+  "vt": 8903.89,
+  "va": 7661.85
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 5,
+  "month": "مايو",
+  "pt": 169150.44,
+  "pa": 58220.76,
+  "st": 219895.57,
+  "sa": 159739.96,
+  "fc": 32483.91,
+  "vt": 7910.98,
+  "va": 12005.93
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 6,
+  "month": "يونيو",
+  "pt": 191213.54,
+  "pa": 71347.16,
+  "st": 248577.61,
+  "sa": 105352.54,
+  "fc": 36720.95,
+  "vt": 5217.49,
+  "va": 8390.02
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 7,
+  "month": "يوليو",
+  "pt": 191213.54,
+  "pa": 26581.04,
+  "st": 248577.61,
+  "sa": 85574.99,
+  "fc": 36720.95,
+  "vt": 4238.02,
+  "va": 6232.95
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": 198567.91,
+  "pa": 58911.36,
+  "st": 258138.28,
+  "sa": 55792.39,
+  "fc": 38133.29,
+  "vt": 2763.07,
+  "va": 5753.2
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": 191213.54,
+  "pa": 33536.4,
+  "st": 248577.61,
+  "sa": 84665.21,
+  "fc": 36720.95,
+  "vt": 4192.97,
+  "va": 6647.35
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": 191213.54,
+  "pa": 53081.5,
+  "st": 248577.61,
+  "sa": 48155.86,
+  "fc": 36720.95,
+  "vt": 2384.88,
+  "va": 6104.0
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": 88252.4,
+  "pa": 9304.4,
+  "st": 114728.13,
+  "sa": 24253.61,
+  "fc": 16948.13,
+  "vt": 1201.14,
+  "va": 4665.5
+ },
+ {
+  "branch": "المدينة المنورة",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 1,
+  "month": "يناير",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 2,
+  "month": "فبراير",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 3,
+  "month": "مارس",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 4,
+  "month": "ابريل",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 5,
+  "month": "مايو",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 6,
+  "month": "يونيو",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 7,
+  "month": "يوليو",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": null,
+  "pa": null,
+  "st": 21000.0,
+  "sa": 14551.31,
+  "fc": 3656.63,
+  "vt": 720.64,
+  "va": 0.0
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": null,
+  "pa": null,
+  "st": 39000.0,
+  "sa": 10743.48,
+  "fc": 6790.88,
+  "vt": 532.06,
+  "va": 2706.5
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": null,
+  "pa": null,
+  "st": 18000.0,
+  "sa": 11721.74,
+  "fc": 3134.25,
+  "vt": 580.51,
+  "va": 477.0
+ },
+ {
+  "branch": "موزع المدينة المنورة",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "العلا",
+  "m": 1,
+  "month": "يناير",
+  "pt": 308826.57,
+  "pa": 309659.35,
+  "st": 401474.55,
+  "sa": 374863.55,
+  "fc": 53939.73,
+  "vt": 20457.65,
+  "va": 16772.78
+ },
+ {
+  "branch": "العلا",
+  "m": 2,
+  "month": "فبراير",
+  "pt": 285070.68,
+  "pa": 275253.66,
+  "st": 370591.89,
+  "sa": 313073.21,
+  "fc": 49790.52,
+  "vt": 17085.53,
+  "va": 19873.73
+ },
+ {
+  "branch": "العلا",
+  "m": 3,
+  "month": "مارس",
+  "pt": 273192.74,
+  "pa": 141690.27,
+  "st": 355150.56,
+  "sa": 264346.63,
+  "fc": 47715.92,
+  "vt": 14426.34,
+  "va": 12235.06
+ },
+ {
+  "branch": "العلا",
+  "m": 4,
+  "month": "ابريل",
+  "pt": 308826.57,
+  "pa": 201366.88,
+  "st": 401474.55,
+  "sa": 314855.06,
+  "fc": 53939.73,
+  "vt": 17182.77,
+  "va": 12375.85
+ },
+ {
+  "branch": "العلا",
+  "m": 5,
+  "month": "مايو",
+  "pt": 273192.74,
+  "pa": 202283.27,
+  "st": 355150.56,
+  "sa": 305671.07,
+  "fc": 47715.92,
+  "vt": 16681.57,
+  "va": 14168.28
+ },
+ {
+  "branch": "العلا",
+  "m": 6,
+  "month": "يونيو",
+  "pt": 308826.57,
+  "pa": 219730.33,
+  "st": 401474.55,
+  "sa": 249865.09,
+  "fc": 53939.73,
+  "vt": 13636.03,
+  "va": 15055.18
+ },
+ {
+  "branch": "العلا",
+  "m": 7,
+  "month": "يوليو",
+  "pt": 308826.57,
+  "pa": 228404.72,
+  "st": 401474.55,
+  "sa": 296468.16,
+  "fc": 53939.73,
+  "vt": 16179.33,
+  "va": 16038.38
+ },
+ {
+  "branch": "العلا",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": 320704.52,
+  "pa": 204168.14,
+  "st": 416915.87,
+  "sa": 232010.81,
+  "fc": 56014.34,
+  "vt": 12661.66,
+  "va": 9917.59
+ },
+ {
+  "branch": "العلا",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": 308826.57,
+  "pa": 250428.85,
+  "st": 401474.55,
+  "sa": 279092.51,
+  "fc": 53939.73,
+  "vt": 15231.08,
+  "va": 8692.54
+ },
+ {
+  "branch": "العلا",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": 308826.57,
+  "pa": 180743.16,
+  "st": 401474.55,
+  "sa": 287113.13,
+  "fc": 53939.73,
+  "vt": 15668.79,
+  "va": 11981.79
+ },
+ {
+  "branch": "العلا",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": 142535.34,
+  "pa": 111118.2,
+  "st": 185295.94,
+  "sa": 166791.14,
+  "fc": 24895.26,
+  "vt": 9102.39,
+  "va": 15515.5
+ },
+ {
+  "branch": "العلا",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "تبوك",
+  "m": 1,
+  "month": "يناير",
+  "pt": 225363.13,
+  "pa": 65289.19,
+  "st": 292972.07,
+  "sa": 75458.58,
+  "fc": 37202.49,
+  "vt": 9473.48,
+  "va": 14802.84
+ },
+ {
+  "branch": "تبوك",
+  "m": 2,
+  "month": "فبراير",
+  "pt": 208027.5,
+  "pa": 52436.63,
+  "st": 270435.75,
+  "sa": 56942.73,
+  "fc": 34340.76,
+  "vt": 7148.9,
+  "va": 5278.88
+ },
+ {
+  "branch": "تبوك",
+  "m": 3,
+  "month": "مارس",
+  "pt": 199359.69,
+  "pa": 19728.75,
+  "st": 259167.6,
+  "sa": 39694.95,
+  "fc": 32909.9,
+  "vt": 4983.52,
+  "va": 9047.57
+ },
+ {
+  "branch": "تبوك",
+  "m": 4,
+  "month": "ابريل",
+  "pt": 225363.13,
+  "pa": 32795.21,
+  "st": 292972.07,
+  "sa": 67687.51,
+  "fc": 37202.49,
+  "vt": 8497.86,
+  "va": 11880.3
+ },
+ {
+  "branch": "تبوك",
+  "m": 5,
+  "month": "مايو",
+  "pt": 199359.69,
+  "pa": 31907.05,
+  "st": 259167.6,
+  "sa": 52935.6,
+  "fc": 32909.9,
+  "vt": 6645.82,
+  "va": 18546.46
+ },
+ {
+  "branch": "تبوك",
+  "m": 6,
+  "month": "يونيو",
+  "pt": 225363.13,
+  "pa": 35207.24,
+  "st": 292972.07,
+  "sa": 48216.19,
+  "fc": 37202.49,
+  "vt": 6053.32,
+  "va": 23109.0
+ },
+ {
+  "branch": "تبوك",
+  "m": 7,
+  "month": "يوليو",
+  "pt": 225363.13,
+  "pa": 22318.65,
+  "st": 292972.07,
+  "sa": 37967.54,
+  "fc": 37202.49,
+  "vt": 4766.65,
+  "va": 20628.88
+ },
+ {
+  "branch": "تبوك",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": 234030.94,
+  "pa": 58542.06,
+  "st": 304240.22,
+  "sa": 72341.72,
+  "fc": 38633.36,
+  "vt": 9082.17,
+  "va": 4794.45
+ },
+ {
+  "branch": "تبوك",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": 225363.13,
+  "pa": 46693.69,
+  "st": 292972.07,
+  "sa": 80386.84,
+  "fc": 37202.49,
+  "vt": 10092.2,
+  "va": 6980.75
+ },
+ {
+  "branch": "تبوك",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": 225363.13,
+  "pa": 77976.23,
+  "st": 292972.07,
+  "sa": 93254.16,
+  "fc": 37202.49,
+  "vt": 11707.63,
+  "va": 8388.08
+ },
+ {
+  "branch": "تبوك",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": 104013.75,
+  "pa": 23825.96,
+  "st": 135217.88,
+  "sa": 43900.28,
+  "fc": 17170.38,
+  "vt": 5511.48,
+  "va": 7772.99
+ },
+ {
+  "branch": "تبوك",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 1,
+  "month": "يناير",
+  "pt": 30004.12,
+  "pa": 25431.88,
+  "st": 39005.35,
+  "sa": 61514.79,
+  "fc": 6338.65,
+  "vt": 12482.71,
+  "va": 17845.72
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 2,
+  "month": "فبراير",
+  "pt": 27696.11,
+  "pa": 59216.3,
+  "st": 36004.94,
+  "sa": 43076.53,
+  "fc": 5851.06,
+  "vt": 8741.18,
+  "va": 9797.0
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 3,
+  "month": "مارس",
+  "pt": 26542.1,
+  "pa": 8844.28,
+  "st": 34504.74,
+  "sa": 30489.57,
+  "fc": 5607.27,
+  "vt": 6187.01,
+  "va": 9059.31
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 4,
+  "month": "ابريل",
+  "pt": 30004.12,
+  "pa": 10252.8,
+  "st": 39005.35,
+  "sa": 44087.83,
+  "fc": 6338.65,
+  "vt": 8946.4,
+  "va": 8507.0
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 5,
+  "month": "مايو",
+  "pt": 26542.1,
+  "pa": 7407.56,
+  "st": 34504.74,
+  "sa": 35786.96,
+  "fc": 5607.27,
+  "vt": 7261.97,
+  "va": 16616.0
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 6,
+  "month": "يونيو",
+  "pt": 30004.12,
+  "pa": 14432.96,
+  "st": 39005.35,
+  "sa": 39031.39,
+  "fc": 6338.65,
+  "vt": 7920.34,
+  "va": 7247.0
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 7,
+  "month": "يوليو",
+  "pt": 30004.12,
+  "pa": 11112.04,
+  "st": 39005.35,
+  "sa": 39085.22,
+  "fc": 6338.65,
+  "vt": 7931.26,
+  "va": 10647.0
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": 31158.12,
+  "pa": 36025.22,
+  "st": 40505.56,
+  "sa": 51119.86,
+  "fc": 6582.44,
+  "vt": 10373.35,
+  "va": 7666.0
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": 30004.12,
+  "pa": 14075.61,
+  "st": 39005.35,
+  "sa": 43137.72,
+  "fc": 6338.65,
+  "vt": 8753.6,
+  "va": 11078.0
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": 30004.12,
+  "pa": 58247.75,
+  "st": 39005.35,
+  "sa": 41394.78,
+  "fc": 6338.65,
+  "vt": 8399.92,
+  "va": 10169.5
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": 13848.05,
+  "pa": 0.0,
+  "st": 18002.47,
+  "sa": 16149.57,
+  "fc": 2925.53,
+  "vt": 3277.11,
+  "va": 6398.0
+ },
+ {
+  "branch": "موزع 1 تبوك",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 1,
+  "month": "يناير",
+  "pt": 74836.98,
+  "pa": 20992.25,
+  "st": 97288.07,
+  "sa": 29852.18,
+  "fc": 13241.87,
+  "vt": 3733.99,
+  "va": 16171.58
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 2,
+  "month": "فبراير",
+  "pt": 69080.29,
+  "pa": 65731.64,
+  "st": 89804.38,
+  "sa": 25654.28,
+  "fc": 12223.27,
+  "vt": 3208.9,
+  "va": 10181.86
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 3,
+  "month": "مارس",
+  "pt": 66201.94,
+  "pa": 418.8,
+  "st": 86062.53,
+  "sa": 28507.91,
+  "fc": 11713.96,
+  "vt": 3565.84,
+  "va": 2884.02
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 4,
+  "month": "ابريل",
+  "pt": 74836.98,
+  "pa": 5050.0,
+  "st": 97288.07,
+  "sa": 26822.1,
+  "fc": 13241.87,
+  "vt": 3354.98,
+  "va": 4414.0
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 5,
+  "month": "مايو",
+  "pt": 66201.94,
+  "pa": 58475.8,
+  "st": 86062.53,
+  "sa": 18120.98,
+  "fc": 11713.96,
+  "vt": 2266.62,
+  "va": 8033.6
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 6,
+  "month": "يونيو",
+  "pt": 74836.98,
+  "pa": 33235.88,
+  "st": 97288.07,
+  "sa": 26073.1,
+  "fc": 13241.87,
+  "vt": 3261.29,
+  "va": 1765.0
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 7,
+  "month": "يوليو",
+  "pt": 74836.98,
+  "pa": 3120.0,
+  "st": 97288.07,
+  "sa": 17855.11,
+  "fc": 13241.87,
+  "vt": 2233.36,
+  "va": 3009.98
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": 77715.33,
+  "pa": 5620.0,
+  "st": 101029.92,
+  "sa": -4999.07,
+  "fc": 13751.13,
+  "vt": -625.3,
+  "va": 8016.0
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": 74836.98,
+  "pa": 80156.41,
+  "st": 97288.07,
+  "sa": 45277.84,
+  "fc": 13241.87,
+  "vt": 5663.47,
+  "va": 8140.56
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": 74836.98,
+  "pa": 13228.82,
+  "st": 97288.07,
+  "sa": 32384.56,
+  "fc": 13241.87,
+  "vt": 4050.74,
+  "va": 3902.34
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": 34540.14,
+  "pa": 13653.01,
+  "st": 44902.19,
+  "sa": 14489.57,
+  "fc": 6111.63,
+  "vt": 1812.39,
+  "va": 1254.75
+ },
+ {
+  "branch": "مستودع سكاكا",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 1,
+  "month": "يناير",
+  "pt": null,
+  "pa": null,
+  "st": 0.0,
+  "sa": 0.0,
+  "fc": 0.0,
+  "vt": 0.0,
+  "va": 0.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 2,
+  "month": "فبراير",
+  "pt": 0.0,
+  "pa": 0.0,
+  "st": 18002.47,
+  "sa": 3063.48,
+  "fc": 6346.42,
+  "vt": 621.65,
+  "va": 0.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 3,
+  "month": "مارس",
+  "pt": null,
+  "pa": null,
+  "st": 34504.74,
+  "sa": 15185.65,
+  "fc": 6081.99,
+  "vt": 3081.51,
+  "va": 2337.69
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 4,
+  "month": "ابريل",
+  "pt": null,
+  "pa": null,
+  "st": 39005.35,
+  "sa": 22219.18,
+  "fc": 6875.29,
+  "vt": 4508.76,
+  "va": 3137.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 5,
+  "month": "مايو",
+  "pt": null,
+  "pa": null,
+  "st": 34504.74,
+  "sa": 13919.17,
+  "fc": 6081.99,
+  "vt": 2824.51,
+  "va": 5355.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 6,
+  "month": "يونيو",
+  "pt": null,
+  "pa": null,
+  "st": 39005.35,
+  "sa": 25600.34,
+  "fc": 6875.29,
+  "vt": 5194.88,
+  "va": 1797.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 7,
+  "month": "يوليو",
+  "pt": null,
+  "pa": null,
+  "st": 39005.35,
+  "sa": 21697.99,
+  "fc": 6875.29,
+  "vt": 4403.0,
+  "va": 1866.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": null,
+  "pa": null,
+  "st": 40505.56,
+  "sa": 11564.6,
+  "fc": 7139.72,
+  "vt": 2346.71,
+  "va": 2400.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": null,
+  "pa": null,
+  "st": 39005.35,
+  "sa": 15162.41,
+  "fc": 6875.29,
+  "vt": 3076.79,
+  "va": 2761.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": null,
+  "pa": null,
+  "st": 39005.35,
+  "sa": 23745.71,
+  "fc": 6875.29,
+  "vt": 4818.53,
+  "va": 2222.0
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": null,
+  "pa": null,
+  "st": 18002.47,
+  "sa": 12745.95,
+  "fc": 3173.21,
+  "vt": 2586.44,
+  "va": 2458.5
+ },
+ {
+  "branch": "موزع 1 سكاكا",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 1,
+  "month": "يناير",
+  "pt": 32249.13,
+  "pa": 0.0,
+  "st": 41923.87,
+  "sa": 33818.26,
+  "fc": 6601.8,
+  "vt": 8905.09,
+  "va": 2537.2
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 2,
+  "month": "فبراير",
+  "pt": 29768.43,
+  "pa": 19369.51,
+  "st": 38698.96,
+  "sa": 28335.66,
+  "fc": 6093.97,
+  "vt": 7461.4,
+  "va": 5243.0
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 3,
+  "month": "مارس",
+  "pt": 28528.0,
+  "pa": 7771.6,
+  "st": 37086.5,
+  "sa": 26939.14,
+  "fc": 5840.05,
+  "vt": 7093.76,
+  "va": 5399.64
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 4,
+  "month": "ابريل",
+  "pt": 32249.13,
+  "pa": 21223.4,
+  "st": 41923.87,
+  "sa": 31968.7,
+  "fc": 6601.8,
+  "vt": 8418.06,
+  "va": 5940.0
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 5,
+  "month": "مايو",
+  "pt": 28528.08,
+  "pa": 25255.52,
+  "st": 37086.5,
+  "sa": 26962.61,
+  "fc": 5840.05,
+  "vt": 7099.85,
+  "va": 5905.44
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 6,
+  "month": "يونيو",
+  "pt": 32249.13,
+  "pa": 22082.16,
+  "st": 41923.87,
+  "sa": 36184.36,
+  "fc": 6601.8,
+  "vt": 9528.14,
+  "va": 4804.0
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 7,
+  "month": "يوليو",
+  "pt": 32249.13,
+  "pa": 13551.09,
+  "st": 41923.87,
+  "sa": 34069.57,
+  "fc": 6601.8,
+  "vt": 8971.27,
+  "va": 4568.0
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 8,
+  "month": "أغسطس",
+  "pt": 33489.48,
+  "pa": 12323.61,
+  "st": 43536.33,
+  "sa": 34633.92,
+  "fc": 6855.71,
+  "vt": 9119.87,
+  "va": 2401.04
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 9,
+  "month": "سبتمبر",
+  "pt": 32249.13,
+  "pa": 15326.5,
+  "st": 41923.87,
+  "sa": 27255.66,
+  "fc": 6601.8,
+  "vt": 7177.01,
+  "va": 1960.0
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 10,
+  "month": "أكتوبر",
+  "pt": 32249.13,
+  "pa": 26161.98,
+  "st": 41923.87,
+  "sa": 21368.09,
+  "fc": 6601.8,
+  "vt": 5626.69,
+  "va": 5762.87
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 11,
+  "month": "نوفمبر",
+  "pt": 14884.21,
+  "pa": 6959.09,
+  "st": 19349.48,
+  "sa": 14500.0,
+  "fc": 3046.98,
+  "vt": 3818.17,
+  "va": 5536.66
+ },
+ {
+  "branch": "مستودع حائل",
+  "m": 12,
+  "month": "ديسمبر",
+  "pt": null,
+  "pa": null,
+  "st": null,
+  "sa": null,
+  "fc": null,
+  "vt": null,
+  "va": null
+ }
+];
+const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const BRANCHES = [...new Set(RAW.map(r => r.branch))];
+const COL = {actual:'#1e40af', target:'#cbd5e1', sales:'#0ea5e9', varCost:'#dc2626', good:'#16a34a', warn:'#d97706', bad:'#dc2626', mute:'#94a3b8', purch:'#1e40af'};
+
+const $ = id => document.getElementById(id);
+const fmt = n => (n == null || !isFinite(n)) ? '—' : Math.round(n).toLocaleString('en-US');
+const fp = n => (n == null || !isFinite(n)) ? '—' : n.toFixed(1) + '%';
+const div = (a, b) => b ? a / b * 100 : null;
+const sg = v => v > 0 ? '+' : '';
+const short = v => Math.abs(v) >= 1e6 ? (v/1e6).toFixed(1) + 'م' : Math.abs(v) >= 1e3 ? Math.round(v/1e3) + 'ألف' : v;
+const tone = p => p == null ? '' : p >= 80 ? 'good' : p >= 50 ? 'warn' : 'bad';
+
+function rows(b, f, t){ return RAW.filter(r => r.m >= f && r.m <= t && (b === 'all' || r.branch === b)); }
+function sumK(rs, k){ return rs.reduce((s, r) => s + (r[k] || 0), 0); }
+function agg(rs){
+  return {st:sumK(rs,'st'), sa:sumK(rs,'sa'), pt:sumK(rs,'pt'), pa:sumK(rs,'pa'), vt:sumK(rs,'vt'), va:sumK(rs,'va'), fc:sumK(rs,'fc')};
+}
+
+/* ---------- controls ---------- */
+const bSel = $('branch'), fSel = $('from'), tSel = $('to');
+bSel.add(new Option('الإجمالي (كل الفروع)', 'all'));
+BRANCHES.forEach(b => bSel.add(new Option(b, b)));
+MONTHS.forEach((m, i) => { fSel.add(new Option(m, i + 1)); tSel.add(new Option(m, i + 1)); });
+fSel.value = '1'; tSel.value = '11';
+[bSel, fSel, tSel].forEach(el => el.addEventListener('change', e => {
+  if (+fSel.value > +tSel.value) { if (e.target === fSel) tSel.value = fSel.value; else fSel.value = tSel.value; }
+  render();
+}));
+
+/* ---------- chart defaults ---------- */
+Chart.defaults.font.family = "'Cairo', system-ui, sans-serif";
+Chart.defaults.color = '#64748b';
+Chart.defaults.borderColor = 'rgba(148,163,184,.2)';
+const C = {};
+function upsert(id, cfg){
+  if (C[id]) { C[id].data = cfg.data; C[id].options = cfg.options; C[id].update(); }
+  else C[id] = new Chart($(id), cfg);
+}
+const yTicks = {callback: v => short(v)};
+const baseOpts = () => ({
+  responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
+  plugins: {legend: {position: 'bottom', labels: {usePointStyle: true, boxWidth: 8}},
+    tooltip: {callbacks: {label: c => c.dataset.label + ': ' + fmt(c.parsed.y)}}},
+  scales: {y: {grid: {color: 'rgba(148,163,184,.18)'}, ticks: yTicks}, x: {grid: {display: false}}}
+});
+
+/* ---------- render ---------- */
+function render(){
+  const b = bSel.value, f = +fSel.value, t = +tSel.value;
+  const A = agg(rows(b, f, t));
+  const sp = div(A.sa, A.st), pp = div(A.pa, A.pt), vp = div(A.va, A.vt);
+  const exp = A.pa + A.va + A.fc;
+  const vdiff = A.va - A.vt;
+
+  $('kpis').innerHTML = [
+    {l:'المبيعات الفعلية', v:fmt(A.sa), s:`المستهدف ${fmt(A.st)} · تحقق ${fp(sp)}`, p:sp, t:tone(sp)},
+    {l:'المشتريات الفعلية', v:fmt(A.pa), s:`المستهدف ${fmt(A.pt)} · تحقق ${fp(pp)}`, p:pp, t:tone(pp)},
+    {l:'التكاليف المتغيرة', v:fmt(A.va), s:`المستهدف ${fmt(A.vt)} · انحراف ${sg(vdiff)}${fmt(vdiff)}`, p:vp, t: vp == null ? '' : vp > 100 ? 'bad' : 'good'},
+    {l:'التكاليف الثابتة', v:fmt(A.fc), s:'لا يوجد مستهدف مسجل', p:null},
+    {l:'المصروفات ÷ المبيعات', v:fp(div(exp, A.sa)), s:`إجمالي المصروفات ${fmt(exp)}`, p:null}
+  ].map(k => `<div class="kpi"><span class="lbl">${k.l}</span><strong class="val">${k.v}</strong><span class="sub">${k.s}</span>${k.p != null ? `<div class="bar"><i class="${k.t}" style="width:${Math.min(100, k.p)}%"></i></div>` : ''}</div>`).join('');
+
+  const ms = []; for (let m = f; m <= t; m++) ms.push({m, ...agg(rows(b, m, m))});
+  const labels = ms.map(x => MONTHS[x.m - 1]);
+
+  upsert('cSales', {type:'bar', data:{labels, datasets:[
+    {label:'المستهدف', data:ms.map(x => x.st), backgroundColor:COL.target, borderRadius:6},
+    {label:'الفعلي', data:ms.map(x => x.sa), backgroundColor:COL.actual, borderRadius:6}
+  ]}, options: baseOpts()});
+
+  upsert('cPurch', {type:'bar', data:{labels, datasets:[
+    {label:'المستهدف', data:ms.map(x => x.pt), backgroundColor:COL.target, borderRadius:6},
+    {label:'الفعلي', data:ms.map(x => x.pa), backgroundColor:COL.purch, borderRadius:6}
+  ]}, options: baseOpts()});
+
+  const vOpts = baseOpts();
+  upsert('cVar', {type:'line', data:{labels, datasets:[
+    {label:'انحراف المبيعات', data:ms.map(x => x.sa - x.st), borderColor:COL.sales, backgroundColor:COL.sales, tension:.35, pointRadius:4},
+    {label:'انحراف التكاليف المتغيرة', data:ms.map(x => x.va - x.vt), borderColor:COL.varCost, backgroundColor:COL.varCost, tension:.35, pointRadius:4}
+  ]}, options: vOpts});
+
+  upsert('cCost', {type:'doughnut', data:{labels:['مشتريات','متغيرة','ثابتة'], datasets:[{
+    data:[A.pa, A.va, A.fc], backgroundColor:['#1e40af','#0ea5e9','#94a3b8'], borderWidth:0
+  }]}, options:{responsive:true, maintainAspectRatio:false, cutout:'62%',
+    plugins:{legend:{position:'bottom', labels:{usePointStyle:true, boxWidth:8}},
+      tooltip:{callbacks:{label:c => c.label + ': ' + fmt(c.parsed)}}}}});
+
+  const bs = BRANCHES.map(name => { const a = agg(rows(name, f, t)); return {name, p: div(a.sa, a.st)}; })
+    .filter(x => x.p != null).sort((x, y) => y.p - x.p);
+  $('brWrap').style.height = Math.max(200, bs.length * 34 + 60) + 'px';
+  const colorOf = p => p >= 80 ? COL.good : p >= 50 ? COL.warn : COL.bad;
+  upsert('cBranch', {type:'bar', data:{labels:bs.map(x => x.name), datasets:[{
+    label:'تحقق المبيعات %', data:bs.map(x => +x.p.toFixed(1)),
+    backgroundColor:bs.map(x => (b === 'all' || x.name === b) ? colorOf(x.p) : colorOf(x.p) + '55'),
+    borderRadius:6
+  }]}, options:{responsive:true, maintainAspectRatio:false, indexAxis:'y',
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c => 'التحقق: ' + c.parsed.x.toFixed(1) + '%'}}},
+    scales:{x:{grid:{color:'rgba(148,163,184,.18)'}, ticks:{callback:v => v + '%'}}, y:{grid:{display:false}}}}});
+
+  const pill = p => p == null ? '<span class="muted">—</span>' : `<span class="pill ${tone(p)}">${fp(p)}</span>`;
+  const head = `<tr><th>الفرع</th><th>المبيعات الفعلية</th><th>مستهدف المبيعات</th><th>تحقق المبيعات</th><th>المشتريات الفعلية</th><th>تحقق المشتريات</th><th>انحراف المتغيرة</th><th>الثابتة</th></tr>`;
+  const line = (name, a, cls) => {
+    const dv = a.va - a.vt;
+    const dvTxt = (!a.vt && !a.va) ? '—' : `<span class="${dv > 0 ? 'neg' : 'pos'}">${sg(dv)}${fmt(dv)}</span>`;
+    return `<tr class="${cls}"><td>${name}</td><td>${fmt(a.sa)}</td><td>${fmt(a.st)}</td><td>${pill(div(a.sa, a.st))}</td><td>${fmt(a.pa)}</td><td>${pill(div(a.pa, a.pt))}</td><td>${dvTxt}</td><td>${fmt(a.fc)}</td></tr>`;
+  };
+  const body = BRANCHES.map(name => line(name, agg(rows(name, f, t)), name === b ? 'sel' : '')).join('');
+  $('tbl').innerHTML = head + body + line('الإجمالي', agg(rows('all', f, t)), 'total');
+}
+
+render();
+</script>
+</body>
+</html>
